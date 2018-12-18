@@ -1,0 +1,29 @@
+{
+  "name": "mongorestserver",
+  "version": "0.0.1",
+  "description": "Rest server using Express and MongoDB with mongoose",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "keywords": [
+    "mongodb",
+    "rest",
+    "server",
+    "api",
+    "express"
+  ],
+  "author": "Edgar Colón <ecolon@copiloto.com.mx>",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^3.0.2",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "handlebars": "^4.0.12",
+    "mongoose": "5.3.10",
+    "mongoose-unique-validator": "2.0.2",
+    "socket.io": "^2.1.1",
+    "underscore": "^1.9.1"
+  }
+}
