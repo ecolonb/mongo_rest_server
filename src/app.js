@@ -29,13 +29,14 @@ app.use('/', routesWeb);
 app.use('/api/', apiRoutes);
 
 // start BD -> Connect
-// mongoose.connect(
-//   'mongodb://localhost:27017/test',
-//   (err, res) => {
-//     if (err) throw err;
-//     console.log('Datase => OK');
-//   }
-// );
+//'mongodb://localhost:27017/test',
+mongoose.connect(
+  'mongodb://mongo_user:root123@ds153978.mlab.com:53978/mongo_test',
+  (err, res) => {
+    if (err) throw err;
+    console.log('Datase => OK');
+  }
+);
 // Server listener
 app.listen(port, () => {
   console.log('Server on: http://localhost:' + port);
