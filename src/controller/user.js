@@ -1,11 +1,8 @@
 const bc = require('bcrypt');
 const User = require('../models/user');
-const new_user = (req, res) => {
+const _ = require('underscore');
+const newUser = (req, res) => {
   const body = req.body;
-  console.log(
-    'bc.hashSync(body.password, 10)=> ',
-    bc.hashSync(body.password, 10)
-  );
   const user = new User({
     name: body.nombre,
     lastname: body.apellidos,
@@ -32,7 +29,7 @@ const new_user = (req, res) => {
   });
 };
 
-const get_user = (req, res) => {
+const getUser = (req, res) => {
   // const id = req.query.id;
   const id = req.params.id;
   const token = req.params.token;
@@ -66,26 +63,24 @@ const get_user = (req, res) => {
   });
 };
 
-const update_user = (req, res) => {
+const updateUser = (req, res) => {
   const id = req.params.id;
   const body = req.body;
-
-  console.log(id);
-  console.log(body);
   User.findByIdAndUpdate(
     id,
     body,
-    { runValidators: true, context: 'query' },
-    (reject_msg, result) => {
-      if (reject_msg) {
+    { runValidators: true, context: 'query', new: true },
+    (err, result) => {
+      if (err) {
         return res.status(400).json({
           err: true,
-          message: reject_msg
+          message: err
         });
       }
+      const result_pick = _.pick(result, ['name', 'lastname', 'email']);
       return res.status(200).json({
         err_: false,
-        message: result
+        message: result_pick
       });
     }
   ).catch(err__ => {
@@ -93,8 +88,56 @@ const update_user = (req, res) => {
   });
 };
 
+const searchUser = (req, res) => {
+  const searcValue = {
+    name: new RegExp(req.params.search),
+    status: true
+  };
+  User.find(searcValue, 'name lastname email status')
+    .skip(0)
+    .limit(15)
+    .exec((err, result) => {
+      if (err) {
+        const response = {
+          err: true,
+          msg: err
+        };
+        console.log('response: ', response);
+        return res.status(400).json(response);
+      }
+      const response = {
+        err: false,
+        msg: result
+      };
+      console.log('response: ', response);
+      return res.status(200).json(response);
+    });
+};
+const deleteUSer = (req, res) => {
+  const cambiaEstado = {
+    status: false
+  };
+  const id = req.params.id;
+  User.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, result) => {
+    if (err) {
+      const response = {
+        err: true,
+        msg: result
+      };
+      return res.status(400).json(response);
+    }
+    const resultPick = _.pick(result, ['name', 'lastname', 'email', 'status']);
+    const response = {
+      err: false,
+      msg: resultPick
+    };
+    return res.status(200).json(response);
+  });
+};
 module.exports = {
-  new_user,
-  get_user,
-  update_user
+  newUser,
+  getUser,
+  updateUser,
+  searchUser,
+  deleteUSer
 };
