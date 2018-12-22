@@ -89,8 +89,9 @@ const updateUser = (req, res) => {
 };
 
 const searchUser = (req, res) => {
+  // agregar la opcion "i" al RegExp
   const searcValue = {
-    name: new RegExp(req.params.search),
+    name: new RegExp(req.params.search, 'i'),
     status: true
   };
   User.find(searcValue, 'name lastname email status')

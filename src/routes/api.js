@@ -11,6 +11,10 @@ routes.delete('/user/delete/:id', userController.deleteUSer);
 routes.post('/category/new', categoryCotroller.newCategory);
 routes.get('/get_category/:target', categoryCotroller.getCategories);
 
+//Others
+routes.post('/category/new', categoryCotroller.newCategory);
+
 module.exports = {
   routes
 };
+gasolineras;
