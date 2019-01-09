@@ -8,8 +8,9 @@ routes.get('/user/get/:search', userController.searchUser);
 routes.put('/user/update/:id', userController.updateUser);
 routes.delete('/user/delete/:id', userController.deleteUSer);
 // Categories
-routes.post('/category/new', categoryCotroller.newCategory);
-routes.get('/get_category/:target', categoryCotroller.getCategories);
+routes.post('/category/new/:id/:token', categoryCotroller.newCategory);
+routes.get('/get_categories/:target', categoryCotroller.getCategories);
+routes.get('/get_category/:id', categoryCotroller.getCategory);
 
 //Others
 routes.post('/category/new', categoryCotroller.newCategory);
@@ -17,4 +18,3 @@ routes.post('/category/new', categoryCotroller.newCategory);
 module.exports = {
   routes
 };
-gasolineras;

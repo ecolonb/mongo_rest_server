@@ -12,6 +12,11 @@ const CategorySchema = new mongoose.Schema({
     required: false,
     default: '-'
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'User is required!']
+  },
   created_at: {
     type: Date,
     reqired: false,
@@ -27,5 +32,5 @@ const CategorySchema = new mongoose.Schema({
 CategorySchema.plugin(muv, {
   message: 'El valor: [{VALUE}] para el campo [{PATH}] ya existe!'
 });
-
-module.exports = mongoose.model('Category', CategorySchema);
+const Category = mongoose.model('Category', CategorySchema);
+module.exports = Category;

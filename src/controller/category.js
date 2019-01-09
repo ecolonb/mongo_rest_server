@@ -1,13 +1,21 @@
 // Modelos
 const Category = require('../models/category');
-
-const newCategory = (req, res) => {
+const User = require('../models/user');
+async function getUser(id) {
+  let result = await User.findById('5c191e9a345c229a60ad98c3');
+  return result;
+  // expected output: 'resolved'
+}
+const newCategory = async (req, res) => {
   const body = req.body;
-  console.log('body new category data: => ', body);
-  // console.log('req=>', req);
+  const id = req.params.id;
+  const UserDB = await getUser(id);
+  //const token = req.params.token;
+  //Primero se busca el usuario que crea la category
   const category = new Category({
     name: body.name,
-    description: body.description
+    description: body.description,
+    user: UserDB
   });
   category.save((err, categoryData) => {
     if (err) {
@@ -24,6 +32,76 @@ const newCategory = (req, res) => {
       res.status(200).json(response);
     }
   });
+};
+const newCategoryPromise = async (req, res) => {
+  const body = req.body;
+  const id = req.params.id;
+  const res__ = await asyncCall();
+  console.log('res__: ----->>>>', res__);
+  //const token = req.params.token;
+  //Primero se busca el usuario que crea la category
+  getUserPromise(id)
+    .then(user => {
+      //Cuando se resuelve la promesa se obtiene el usuario entonces se crea la nueva categoria
+      const category = new Category({
+        name: body.name,
+        description: body.description,
+        user
+      });
+      category.save((err, categoryData) => {
+        if (err) {
+          const response = {
+            err: true,
+            message: err
+          };
+          return res.status(400).json(response);
+        } else {
+          let response = {
+            err: false,
+            message: categoryData
+          };
+          res.status(200).json(response);
+        }
+      });
+    })
+    .catch(err => {
+      return res
+        .status(400)
+        .json({ err_: true, msg: 'No se encontro el usuario...' });
+    });
+};
+const getCategory = (req, res) => {
+  const id = req.params.id;
+  Category.findById(id)
+    .populate('user')
+    .exec((err, category) => {
+      if (err) {
+        const response = {
+          err: true,
+          message: err
+        };
+        return res.status(400).json(response);
+      } else {
+        category.user.password = null;
+        let response = {
+          err: false,
+          message: category
+        };
+        return res.status(200).json(response);
+      }
+    });
+};
+const getUserPromise = id => {
+  const UserPromise = new Promise((resolve, reject) => {
+    User.findById(id, (err, UsuarioDB) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(UsuarioDB);
+      }
+    });
+  });
+  return UserPromise;
 };
 /***** Funcion para buscar categorias */
 const getCategories = (req, res) => {
@@ -67,5 +145,6 @@ const getCategories = (req, res) => {
 
 module.exports = {
   newCategory,
-  getCategories
+  getCategories,
+  getCategory
 };

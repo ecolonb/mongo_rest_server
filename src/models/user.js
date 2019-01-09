@@ -48,10 +48,16 @@ const userSchema = new Schema({
 });
 
 // Intersertar JSON para borrar password!
+userSchema.methods.toJSON = function() {
+  let obj = this.toObject();
+  //Eliminando propiedades que no queremos mostrar
+  delete obj.password;
 
+  return obj;
+};
 // plugin to validate unique data
 userSchema.plugin(uniqueValidator, {
   message: 'El valor: [{VALUE}] para el campo [{PATH}] ya existe!'
 });
-
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+module.exports = User;
